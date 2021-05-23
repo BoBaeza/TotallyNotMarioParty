@@ -10,6 +10,7 @@ public class Platformer : MonoBehaviour
     public float jumpForce;
 
     bool isGrounded = false;
+    bool facingRight = true;
     public Transform isGroundedChecker;
     public float checkGroundRadius;
     public LayerMask groundLayer;
@@ -38,6 +39,17 @@ public class Platformer : MonoBehaviour
     {
         float x = Input.GetAxisRaw("Horizontal");
         float moveBy = x * speed;
+        if (moveBy < 0){
+            if (facingRight == true) {
+                transform.eulerAngles = new Vector3(0, -180, 0);
+                facingRight = false;
+            }
+        } else if (moveBy > 0){
+            if (facingRight == false){
+                transform.eulerAngles = new Vector3(0, 0, 0);
+                facingRight = true;
+            }
+        }
         rb.velocity = new Vector2(moveBy, rb.velocity.y);
     }
     void Jump()
