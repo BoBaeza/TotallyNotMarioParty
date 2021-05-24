@@ -7,19 +7,24 @@ public class Platformer : MonoBehaviour
     Rigidbody2D rb;
 
     public float speed;
-    public float jumpForce;
-
+    [HideInInspector] bool facingRight = true;
     bool isGrounded = false;
-    bool facingRight = true;
-    public Transform isGroundedChecker;
-    public float checkGroundRadius;
-    public LayerMask groundLayer;
+    float lastTimeGrounded;
 
+    [Header("Jump Settings:")]
+    public float jumpForce;
+    public float bonusJumpCount;
+    private int jumps = 0;
     public float fallMultiplier = 2.5f;
     public float lowJumpMultiplier = 2f;
 
+    [Header("Ground Stuff:")]
+    public Transform isGroundedChecker;
+    public float checkGroundRadius;
+    public LayerMask groundLayer;
     public float remeberGroundedFor;
-    float lastTimeGrounded;
+
+
     // Start is called before the first frame update
     void Start()
     {
@@ -54,8 +59,9 @@ public class Platformer : MonoBehaviour
     }
     void Jump()
     {
-        if (Input.GetKeyDown(KeyCode.Space) && (isGrounded || Time.time - lastTimeGrounded <= remeberGroundedFor)) {
+        if (Input.GetKeyDown(KeyCode.Space) && (isGrounded || Time.time - lastTimeGrounded <= remeberGroundedFor) && jumps != bonusJumpCount) {
             rb.velocity = new Vector2(rb.velocity.x, jumpForce);
+            jumps += 1;
         }
     }
 
@@ -74,6 +80,7 @@ public class Platformer : MonoBehaviour
 
         if (collider != null) {
             isGrounded = true;
+            jumps = 0;
         } else {
             if (isGrounded) {
                 lastTimeGrounded = Time.time;
